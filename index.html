@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Ukrytych Wzorców | Mądrość Kobiety</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --cream:   #F8F4EE;
+  --off:     #F0EBE1;
+  --line:    #DDD6C8;
+  --red:     #8C2E2E;
+  --red2:    #A63535;
+  --ink:     #1A1611;
+  --mid:     #4A4236;
+  --soft:    #7A726A;
+  --white:   #FFFFFF;
+  --serif:   'Cormorant Garamond', Georgia, serif;
+  --sans:    'Inter', system-ui, sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.65;font-size:16px;}
+
+/* ─── SCREENS ─── */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:block;}
+
+/* ─── TOPBAR ─── */
+.bar{
+  background:var(--ink);
+  padding:0 40px;
+  height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.bar-logo{font-family:var(--serif);font-size:.95rem;font-weight:400;color:#E8DDD0;letter-spacing:.18em;text-transform:uppercase;}
+.bar-sub{font-size:.62rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--red2);opacity:.9;}
+@media(max-width:520px){.bar{padding:0 18px;}.bar-sub{display:none;}}
+
+/* ─── TYPOGRAPHY UTILITIES ─── */
+.eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--red);}
+.serif-h1{font-family:var(--serif);font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:300;line-height:1.15;color:var(--ink);}
+.serif-h2{font-family:var(--serif);font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:300;line-height:1.2;color:var(--ink);}
+.serif-h3{font-family:var(--serif);font-size:clamp(1.1rem,2.5vw,1.55rem);font-weight:400;line-height:1.3;color:var(--ink);}
+.lead{font-size:1.05rem;font-weight:300;color:var(--mid);line-height:1.8;}
+em.red{font-style:italic;color:var(--red);}
+
+/* ─── LAYOUT ─── */
+.wrap{max-width:900px;margin:0 auto;padding:64px 40px;}
+.wrap-sm{max-width:680px;margin:0 auto;padding:64px 40px;}
+.wrap-md{max-width:780px;margin:0 auto;padding:64px 40px;}
+@media(max-width:600px){.wrap,.wrap-sm,.wrap-md{padding:44px 20px;}}
+
+/* ─── MAP DECORATION: coordinate lines ─── */
+.coord-line{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:28px;
+}
+.coord-line::before{content:'';flex:1;height:1px;background:var(--line);}
+.coord-line::after{content:'';width:6px;height:6px;border:1px solid var(--red);transform:rotate(45deg);flex-shrink:0;}
+.coord-text{font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--soft);}
+
+/* ─── HERO ─── */
+#screen-hero{background:var(--cream);}
+.hero-grid{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:48px;
+  align-items:start;
+}
+@media(max-width:780px){.hero-grid{grid-template-columns:1fr;}}
+
+.hero-eyebrow{margin-bottom:20px;}
+.hero-title{margin-bottom:22px;}
+.hero-title strong{font-weight:400;color:var(--red);font-style:italic;}
+.hero-body{font-size:1.05rem;color:var(--mid);line-height:1.85;margin-bottom:36px;}
+
+/* 5-area map panel */
+.map-panel{
+  border:1px solid var(--line);
+  background:var(--white);
+  padding:28px 24px;
+}
+.map-panel-title{
+  font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--soft);margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.map-panel-title::after{content:'';flex:1;height:1px;background:var(--line);}
+.map-item{
+  display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:baseline;
+  padding:10px 0;border-bottom:1px solid var(--line);
+}
+.map-item:last-child{border-bottom:none;}
+@media(max-width:780px){.map-panel{margin-top:32px;}}
+.map-num{font-size:.62rem;font-weight:700;color:var(--red);font-family:var(--sans);}
+.map-area{font-family:var(--serif);font-size:.95rem;font-weight:400;color:var(--ink);}
+.map-hook{font-size:.76rem;color:var(--soft);margin-top:2px;line-height:1.4;}
+
+/* identification strip */
+.id-strip{
+  border-left:3px solid var(--red);
+  background:var(--off);
+  padding:24px 28px;
+  margin:32px 0;
+}
+.id-strip p{font-size:.92rem;color:var(--mid);margin-bottom:4px;}
+.id-items{margin-top:14px;display:flex;flex-direction:column;gap:8px;}
+.id-item{
+  display:flex;gap:12px;align-items:flex-start;
+  font-size:.9rem;color:var(--ink);line-height:1.5;
+}
+.id-item::before{content:'—';color:var(--red);font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* steps */
+.steps{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--line);
+  border:1px solid var(--line);
+  margin:32px 0;
+}
+@media(max-width:640px){.steps{grid-template-columns:1fr 1fr;}}
+@media(max-width:360px){.steps{grid-template-columns:1fr;}}
+.step{background:var(--white);padding:22px 18px;}
+.step-num{font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--red);line-height:1;margin-bottom:8px;}
+.step-title{font-size:.8rem;font-weight:600;color:var(--ink);line-height:1.4;margin-bottom:6px;}
+.step-note{font-size:.76rem;color:var(--soft);line-height:1.5;}
+
+.process-note{
+  font-size:.85rem;font-style:italic;color:var(--soft);
+  border-left:2px solid var(--line);padding-left:16px;
+  margin:24px 0 36px;
+  line-height:1.7;
+}
+
+/* ─── BUTTONS ─── */
+.btn{
+  display:inline-block;background:var(--red);color:#fff;
+  font-family:var(--sans);font-size:.78rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:16px 40px;border:none;cursor:pointer;
+  transition:background .18s,transform .1s;text-decoration:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn:hover{background:var(--red2);transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn-ghost{
+  display:inline-block;border:1.5px solid var(--red);color:var(--red);
+  font-family:var(--sans);font-size:.75rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;padding:13px 28px;
+  background:transparent;cursor:pointer;transition:all .18s;text-decoration:none;
+}
+.btn-ghost:hover{background:var(--red);color:#fff;}
+
+/* ─── QUIZ ─── */
+#screen-quiz{background:var(--cream);}
+.progress-wrap{margin-bottom:52px;}
+.progress-bar{width:100%;height:2px;background:var(--line);position:relative;}
+.progress-fill{height:100%;background:var(--red);transition:width .35s ease;}
+.progress-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;
+}
+.progress-label{font-size:.82rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);}
+
+.quiz-instruction{
+  background:var(--ink);color:rgba(255,255,255,.85);
+  padding:14px 20px;margin-bottom:44px;
+  font-size:1rem;line-height:1.65;
+}
+.quiz-instruction strong{color:#fff;}
+
+.q-block{display:none;}
+.q-block.active{display:block;}
+.q-num{font-size:.78rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.q-text{
+  font-family:var(--serif);
+  font-size:clamp(1.25rem,3vw,1.75rem);
+  font-weight:400;color:var(--ink);line-height:1.4;
+  margin-bottom:32px;
+}
+
+.opts{display:flex;flex-direction:column;gap:10px;}
+.opt{
+  width:100%;text-align:left;padding:16px 20px;
+  background:var(--white);border:1px solid var(--line);
+  font-family:var(--sans);font-size:1rem;color:var(--ink);
+  cursor:pointer;transition:all .15s;display:flex;gap:14px;align-items:flex-start;
+  line-height:1.55;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.opt:hover{border-color:var(--red);background:#FEF8F8;padding-left:26px;}
+.opt.sel{border-color:var(--red);background:#FEF0ED;color:var(--red);font-weight:600;}
+.opt-tag{
+  min-width:20px;height:20px;border:1.5px solid currentColor;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.62rem;font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.next-btn{margin-top:32px;opacity:.35;pointer-events:none;transition:opacity .2s;}
+.next-btn.ready{opacity:1;pointer-events:all;}
+
+/* ─── RESULT ─── */
+#screen-result{background:var(--off);}
+.result-header{
+  border-bottom:1px solid var(--line);
+  padding-bottom:32px;margin-bottom:36px;
+}
+.result-kicker{
+  font-size:.62rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--soft);margin-bottom:10px;
+}
+.result-pattern-name{
+  font-family:var(--serif);
+  font-size:clamp(1.9rem,5vw,3rem);
+  font-weight:300;color:var(--red);
+  line-height:1.15;margin-bottom:12px;font-style:italic;
+}
+.result-impact{
+  font-family:var(--serif);
+  font-size:clamp(1rem,2vw,1.25rem);
+  font-weight:400;color:var(--ink);line-height:1.6;
+}
+
+.r-block{
+  background:var(--white);
+  border-top:3px solid var(--red);
+  padding:28px 28px 24px;
+  margin-bottom:16px;
+}
+.r-block-label{
+  font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--soft);margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.r-block-label::after{content:'';flex:1;height:1px;background:var(--line);}
+.r-block p{font-size:.92rem;color:var(--mid);line-height:1.8;}
+.r-list{list-style:none;display:flex;flex-direction:column;gap:0;}
+.r-list li{
+  padding:9px 0 9px 18px;position:relative;
+  font-size:.88rem;color:var(--ink);line-height:1.5;
+  border-bottom:1px solid var(--line);
+}
+.r-list li:last-child{border-bottom:none;}
+.r-list li::before{content:'›';position:absolute;left:0;top:9px;color:var(--red);font-size:1.1rem;font-weight:700;}
+
+.cost-bridge{
+  font-size:.9rem;font-style:italic;color:var(--mid);
+  border-left:3px solid var(--red);padding-left:16px;
+  margin-top:16px;line-height:1.7;
+}
+
+/* recover block */
+.recover-block{
+  background:var(--ink);color:rgba(255,255,255,.9);
+  padding:32px 28px;margin-bottom:16px;
+}
+.recover-label{
+  font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--red2);margin-bottom:16px;
+}
+.recover-list{list-style:none;display:flex;flex-direction:column;gap:0;}
+.recover-list li{
+  padding:9px 0 9px 22px;position:relative;
+  font-size:.9rem;color:rgba(255,255,255,.8);line-height:1.55;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.recover-list li:last-child{border-bottom:none;}
+.recover-list li::before{
+  content:'';position:absolute;left:0;top:16px;
+  width:10px;height:1px;background:var(--red2);
+}
+
+.day-chip{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--red);color:#fff;
+  padding:10px 18px;margin-top:18px;
+  font-size:.76rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+}
+.day-chip::before{content:'→';font-size:.9rem;}
+
+.btn-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:36px;}
+@media(max-width:520px){.btn-row{flex-direction:column;}.btn-row .btn,.btn-row .btn-ghost{width:100%;text-align:center;padding:16px 20px;}}
+
+/* ─── EXERCISE ─── */
+#screen-exercise{background:var(--cream);}
+.ex-header{margin-bottom:36px;}
+.ex-label{font-size:.62rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.ex-q{margin-bottom:28px;}
+.ex-q-label{font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin-bottom:8px;}
+.ex-q-text{
+  font-family:var(--serif);font-size:1.15rem;color:var(--ink);
+  line-height:1.45;margin-bottom:10px;
+}
+.ex-field{
+  width:100%;min-height:72px;border:none;
+  border-bottom:1.5px solid var(--line);
+  background:transparent;resize:none;outline:none;
+  font-family:var(--sans);font-size:.9rem;color:var(--ink);
+  padding:4px 0;line-height:1.8;
+}
+.ex-field:focus{border-bottom-color:var(--red);}
+.ex-closer{
+  font-size:.88rem;font-style:italic;color:var(--soft);
+  border-top:1px solid var(--line);padding-top:16px;margin-top:8px;
+  line-height:1.7;
+}
+
+/* ─── WORKSHOP ─── */
+#screen-workshop{background:var(--cream);color:var(--ink);}
+
+.ws-wrap{max-width:860px;margin:0 auto;padding:64px 40px;}
+@media(max-width:600px){.ws-wrap{padding:40px 18px;}}
+
+/* why-result-alone section */
+.why-alone{
+  background:var(--off);
+  border:1px solid var(--line);
+  border-left:3px solid var(--red);
+  padding:32px 32px;
+  margin-bottom:48px;
+}
+@media(max-width:520px){.why-alone{padding:24px 18px;}}
+.why-alone-label{font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--red2);margin-bottom:14px;}
+.why-alone h3{font-family:var(--serif);font-size:clamp(1.2rem,3vw,1.8rem);font-weight:300;color:var(--ink);margin-bottom:14px;line-height:1.3;}
+.why-alone p{font-size:.9rem;color:var(--mid);line-height:1.8;}
+.why-points{margin-top:18px;display:flex;flex-direction:column;gap:8px;}
+.why-point{
+  display:flex;gap:14px;align-items:flex-start;
+  font-size:.86rem;color:var(--mid);line-height:1.5;
+}
+.why-point::before{content:'—';color:var(--red2);flex-shrink:0;}
+
+/* days */
+.ws-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--red2);margin-bottom:14px;}
+.ws-title{font-family:var(--serif);font-size:clamp(1.8rem,4.5vw,3rem);font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:10px;}
+.ws-sub{font-family:var(--serif);font-size:1rem;font-style:italic;color:var(--soft);margin-bottom:40px;line-height:1.6;}
+
+.days-list{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:8px;
+  margin:28px 0;
+}
+@media(max-width:640px){.days-list{grid-template-columns:1fr 1fr;}}
+@media(max-width:400px){.days-list{grid-template-columns:1fr;}}
+.day{
+  background:#fff;border:1px solid var(--line);
+  padding:18px 14px;transition:background .2s;
+}
+.day.featured{background:#FDF0F0;border-color:rgba(140,46,46,.4);border-top:3px solid var(--red);}
+.day-eyebrow{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--red2);margin-bottom:6px;}
+.day-name{font-family:var(--serif);font-size:1rem;color:var(--ink);margin-bottom:5px;}
+.day-stake{font-size:.74rem;color:var(--soft);line-height:1.4;}
+.day-featured-tag{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-top:8px;}
+
+.ws-map-note{
+  font-size:.84rem;color:var(--soft);
+  font-style:italic;text-align:center;
+  margin-top:14px;
+  padding-top:14px;border-top:1px solid var(--line);
+}
+
+/* separator */
+.sep-light{border:none;border-top:1px solid var(--line);margin:44px 0;}
+
+/* packages */
+.pkg-header{text-align:center;margin-bottom:32px;}
+.pkg-header h2{font-family:var(--serif);font-size:clamp(1.5rem,4vw,2.4rem);font-weight:300;color:var(--ink);margin-bottom:10px;}
+.pkg-header p{font-size:.9rem;color:var(--mid);max-width:500px;margin:0 auto;line-height:1.7;}
+
+.depth-labels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+@media(max-width:640px){.depth-labels{display:none;}}
+.depth-label{text-align:center;font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--red2);}
+
+.pkgs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+@media(max-width:700px){.pkgs{grid-template-columns:1fr;}}
+.pkg{
+  background:#fff;
+  border:1px solid var(--line);
+  border-top:3px solid var(--line);
+  padding:26px 20px;position:relative;
+  display:flex;flex-direction:column;
+}
+.pkg.featured{background:#fff;border:1px solid rgba(140,46,46,.3);border-top:3px solid var(--red);}
+.pkg-badge{
+  position:absolute;top:-1px;left:0;right:0;
+  text-align:center;padding:5px;
+  background:var(--red);
+  font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#fff;
+}
+.pkg-name{font-family:var(--serif);font-size:.88rem;font-style:italic;color:var(--soft);margin-bottom:3px;margin-top:2px;}
+@media(max-width:700px){.pkg.featured{padding-top:34px;}}
+.pkg-variant{font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--ink);margin-bottom:18px;}
+.pkg-price{font-family:var(--serif);font-size:2.2rem;font-weight:300;color:var(--ink);line-height:1;margin-bottom:4px;}
+.pkg-price span{font-size:.8rem;color:var(--soft);font-family:var(--sans);}
+.pkg-for{font-size:.8rem;color:var(--mid);line-height:1.6;margin:14px 0;border-top:1px solid var(--line);padding-top:12px;flex:1;}
+.pkg-includes{list-style:none;margin-bottom:20px;}
+.pkg-includes li{
+  font-size:.78rem;color:var(--mid);
+  padding:5px 0 5px 16px;position:relative;
+  border-bottom:1px solid var(--line);
+}
+.pkg-includes li:last-child{border-bottom:none;}
+.pkg-includes li::before{content:'✓';position:absolute;left:0;color:var(--red2);font-weight:700;}
+.pkg-btn{
+  display:block;width:100%;text-align:center;
+  padding:13px;background:transparent;
+  border:1px solid var(--ink);
+  color:var(--ink);font-size:.72rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;
+  cursor:pointer;text-decoration:none;
+  transition:all .18s;
+}
+.pkg-btn:hover{background:var(--red);border-color:var(--red);color:#fff;}
+.pkg.featured .pkg-btn{background:var(--ink);color:#fff;border-color:var(--ink);}
+.pkg.featured .pkg-btn:hover{background:var(--red);border-color:var(--red);}
+
+/* KL note */
+.kl-note{
+  display:none;
+  background:#FDF0F0;border:1px solid rgba(140,46,46,.3);
+  padding:18px 22px;margin:12px 0 0;
+  font-size:.84rem;color:var(--mid);line-height:1.6;
+}
+.kl-note strong{color:var(--ink);}
+
+/* final CTA */
+.final-cta{text-align:center;margin-top:56px;padding-top:48px;border-top:1px solid var(--line);}
+.final-cta-quote{font-family:var(--serif);font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:300;color:var(--ink);line-height:1.5;margin-bottom:32px;font-style:italic;}
+.final-cta p{font-size:.84rem;color:var(--soft);margin-top:16px;line-height:1.7;}
+.final-cta a{color:var(--mid);text-decoration:underline;}
+.final-cta a:hover{color:var(--ink);}
+
+/* ── INFO STRIP ── */
+.info-strip{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:18px 0 0;padding:12px 20px;background:rgba(140,46,46,.07);border-radius:8px;font-family:var(--sans);font-size:.82rem;color:var(--mid);}
+.info-strip span{display:flex;align-items:center;gap:6px;}
+.info-strip span::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);}
+
+/* ── QUIZ HINT & NAV ── */
+.q-hint{font-family:var(--sans);font-size:.8rem;color:var(--soft);margin:6px 0 10px;line-height:1.5;}
+.q-fallback{font-family:var(--sans);font-size:.78rem;color:var(--soft);font-style:italic;margin:8px 0 0;text-align:center;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px;}
+.prev-btn{background:none;border:1px solid var(--line);color:var(--mid);font-family:var(--sans);font-size:.82rem;padding:9px 18px;border-radius:6px;cursor:pointer;transition:background .2s;}
+.prev-btn:hover{background:var(--off);}
+
+/* ── RESULT SECOND PATTERN ── */
+.r-second{background:var(--off);border:1px solid var(--line);border-radius:10px;padding:18px 22px;margin:24px 0 0;}
+.r-second-label{font-family:var(--sans);font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin-bottom:8px;}
+.r-second-name{font-family:var(--serif);font-size:1.05rem;color:var(--ink);font-weight:600;margin-bottom:4px;}
+.r-second-impact{font-family:var(--sans);font-size:.88rem;color:var(--mid);line-height:1.6;}
+
+/* ── SKIP CTA ── */
+.skip-cta{text-align:center;margin:0 0 28px;font-family:var(--sans);}
+.skip-cta button{background:none;border:none;color:var(--red);font-size:.85rem;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;padding:4px 0;}
+.skip-cta button:hover{color:var(--red2);}
+
+/* ── OPTIONAL EXERCISE NOTE ── */
+.ex-optional-note{font-family:var(--sans);font-size:.84rem;color:var(--soft);font-style:italic;text-align:center;margin:0 0 20px;line-height:1.6;}
+
+/* ── RESTART BUTTON ── */
+.restart-btn{background:none;border:1px solid var(--line);color:var(--soft);font-family:var(--sans);font-size:.78rem;padding:8px 16px;border-radius:6px;cursor:pointer;margin-top:8px;transition:all .2s;}
+.restart-btn:hover{border-color:var(--mid);color:var(--mid);}
+
+
+@media(max-width:520px){
+  .quiz-nav{gap:8px;}
+  .prev-btn{font-size:.75rem;padding:8px 12px;}
+  .info-strip{gap:10px;font-size:.75rem;padding:10px 14px;}
+  .info-strip span{gap:4px;}
+  .q-hint{font-size:.75rem;}
+  .q-fallback{font-size:.73rem;}
+  .ex-optional-note{font-size:.78rem;}
+  .r-second{padding:14px 16px;}
+  .skip-cta button{font-size:.8rem;}
+}
+
+/* ── Q-FALLBACK AS BUTTON ── */
+.q-fallback{display:block;width:100%;background:none;border:1px dashed var(--line);border-radius:6px;padding:9px 14px;font-family:var(--sans);font-size:.78rem;color:var(--soft);font-style:italic;text-align:center;cursor:pointer;margin:8px 0 0;transition:border-color .2s,color .2s;}
+.q-fallback:hover{border-color:var(--mid);color:var(--mid);}
+.q-fallback.used{border-color:var(--red);color:var(--red);font-style:normal;}
+
+/* ── SECONDARY FEATURED DAY ── */
+.day.secondary-featured{border-top:2px dashed var(--red);background:#FFFAF7;}
+.day.secondary-featured .day-eyebrow::after{content:' · drugi wzorzec';font-size:.65rem;color:var(--soft);font-style:italic;}
+
+/* ── PKG COMPARISON BAR ── */
+.pkg-compare{font-family:var(--sans);font-size:.78rem;color:var(--soft);text-align:center;padding:8px 20px 20px;letter-spacing:.01em;line-height:1.8;}
+.pkg-compare strong{color:var(--mid);font-weight:600;}
+
+/* ── LARGER MOBILE FONTS (quiz + packages) ── */
+@media(max-width:520px){
+  .opt{font-size:1.15rem!important;padding:13px 14px!important;}
+  .q-text{font-size:1.15rem!important;}
+  .pkg-btn{font-size:.88rem!important;padding:13px!important;}
+  .pkg-name{font-size:1.1rem!important;}
+  .pkg-price{font-size:1.6rem!important;}
+  .q-fallback{font-size:.82rem;}
+}
+
+/* ── 5TH OPTION (none) ── */
+.opt.opt-none{border-style:dashed;color:var(--soft);font-style:italic;}
+.opt.opt-none.sel{border-color:var(--red);color:var(--red);background:#FDF0F0;}
+.opt.opt-none .opt-tag{background:var(--soft);color:#fff;}
+.opt.opt-none.sel .opt-tag{background:var(--red);}
+
+/* ── CLARIFY PANEL ── */
+.q-clarify{background:var(--off);border:1px solid var(--line);border-radius:10px;padding:16px 18px 18px;margin:14px 0 0;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.clarify-q{font-family:var(--sans);font-size:.84rem;font-weight:600;color:var(--mid);margin-bottom:12px;line-height:1.5;}
+.clarify-opts{display:flex;flex-direction:column;gap:8px;}
+.clarify-opt{display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid var(--line);border-radius:7px;padding:10px 13px;font-family:var(--sans);font-size:.95rem;color:var(--ink);cursor:pointer;text-align:left;transition:border-color .18s,background .18s;}
+.clarify-opt:hover{border-color:var(--mid);background:var(--off);}
+.clarify-opt.sel{border-color:var(--red);background:#FDF0F0;color:var(--ink);}
+.clarify-tag{flex-shrink:0;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--soft);margin-top:1px;}
+.clarify-opt.sel .clarify-tag{background:var(--red);border-color:var(--red);color:#fff;}
+</style>
+</head>
+<body>
+
+<!-- ══════════ TOPBAR ══════════ -->
+<nav class="bar">
+  <span class="bar-logo">Mądrość Kobiety</span>
+  <span class="bar-sub">Mapa Ukrytych Wzorców</span>
+</nav>
+
+
+<!-- ══════════════════════════════ SCREEN 1: HERO ══════════════════════════════ -->
+<div id="screen-hero" class="screen active">
+<div class="wrap">
+
+  <div class="coord-line"><span class="coord-text">punkt wejścia · bezpłatnie</span></div>
+
+  <div class="hero-grid">
+
+    <!-- LEFT: text -->
+    <div>
+      <div class="eyebrow hero-eyebrow" style="margin-bottom:18px;">Mapa Ukrytych Wzorców</div>
+
+      <h1 class="serif-h1 hero-title">
+        Który dawny zapis<br>
+        nadal kieruje dziś<br>
+        <strong>Twoim życiem?</strong>
+      </h1>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:20px 0 22px;overflow:hidden;">
+        <div style="flex:1;height:1px;background:var(--line);"></div>
+        <div style="font-family:var(--serif);font-size:.9rem;font-style:italic;color:var(--red);white-space:nowrap;">To nie charakter. To wzorzec.</div>
+        <div style="flex:1;height:1px;background:var(--line);"></div>
+      </div>
+
+      <p class="hero-body">
+        Odczytaj ślad, który nadal uruchamia w Tobie stare reakcje, napięcia i wybory —
+        nawet jeśli już dawno przestał Ci służyć.<br><br>
+        Przejdź przez krótki test i zobacz, który mechanizm dziś najmocniej
+        zaciska Twój wewnętrzny gorset.
+      </p>
+      <p class="process-note" style="margin-top:14px;margin-bottom:0;font-style:italic;">
+        To krótki test z wynikiem — pokaże Ci dominujący wzorzec i drugi silny ślad w tle.
+      </p>
+
+      <button class="btn" onclick="scrollToInstructions()">Sprawdź zasady i zacznij →</button>
+
+      <div class="info-strip"><span>8 krótkich pytań</span><span>1 odpowiedź na pytanie</span><span>3–4 minuty</span></div>
+
+      <p class="process-note" style="margin-top:28px;margin-bottom:0;">
+        To nie test na idealne odpowiedzi. To punkt wejścia do zobaczenia tego, co działa po cichu.
+      </p>
+    </div>
+
+    <!-- RIGHT: map panel -->
+    <div>
+      <div class="map-panel">
+        <div class="map-panel-title">5 obszarów · 5 wzorców</div>
+
+        <div class="map-item">
+          <span class="map-num">01</span>
+          <div>
+            <div class="map-area">Relacje z innymi</div>
+            <div class="map-hook">gdzie oddajesz siebie za spokój lub akceptację</div>
+          </div>
+        </div>
+        <div class="map-item">
+          <span class="map-num">02</span>
+          <div>
+            <div class="map-area">Relacja ze sobą</div>
+            <div class="map-hook">gdzie żyjesz bardziej według cudzego obrazu niż własnej prawdy</div>
+          </div>
+        </div>
+        <div class="map-item">
+          <span class="map-num">03</span>
+          <div>
+            <div class="map-area">Ciało</div>
+            <div class="map-hook">gdzie napięcie, zmęczenie i przeciążenie mówią za Ciebie</div>
+          </div>
+        </div>
+        <div class="map-item">
+          <span class="map-num">04</span>
+          <div>
+            <div class="map-area">Pieniądze</div>
+            <div class="map-hook">gdzie lęk, wina lub wstyd zatrzymują Cię przed „mieć więcej"</div>
+          </div>
+        </div>
+        <div class="map-item">
+          <span class="map-num">05</span>
+          <div>
+            <div class="map-area">Sukces</div>
+            <div class="map-hook">gdzie boisz się widoczności, wzrostu albo własnej siły</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /hero-grid -->
+
+  <div style="height:40px;border-bottom:1px solid var(--line);margin-bottom:40px;"></div>
+
+  <!-- identification strip -->
+  <div class="id-strip">
+    <p style="font-size:.75rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin-bottom:6px;">Czy to o Tobie?</p>
+    <div class="id-items">
+      <div class="id-item">Z zewnątrz ogarniasz — ale w środku czujesz napięcie i zmęczenie, które nie mijają</div>
+      <div class="id-item">Wracasz do tych samych reakcji, choć dużo już rozumiesz i rozumiałaś od dawna</div>
+      <div class="id-item">W relacjach dajesz za dużo, w pieniądzach coś Cię blokuje, wobec siebie jesteś surowsza niż czuła</div>
+      <div class="id-item">Masz poczucie, że życie idzie trochę nie Twoim rytmem — i nie do końca wiesz dlaczego</div>
+    </div>
+  </div>
+
+  <!-- how it works -->
+  <h2 id="how-it-works" class="serif-h3" style="margin-bottom:20px;color:var(--soft);font-style:italic;">Jak to działa?</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Wybierz to, co dziś najbardziej prawdziwe</div>
+      <div class="step-note">8 krótkich pytań — jak najczęściej reagujesz, nie jak chciałabyś reagować</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Zobacz, który mechanizm działa w tle</div>
+      <div class="step-note">Wynik z opisem wzorca, który dziś najmocniej wpływa na Twoje życie</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Poczuj, gdzie ten wzorzec Cię naprawdę dotyka</div>
+      <div class="step-note">Krótkie ćwiczenie — przejście od „wiem" do „widzę to u siebie"</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Wejdź w kolejny krok zmiany</div>
+      <div class="step-note">Zobaczysz, jak przełożyć ten wgląd na pracę w warsztacie ZDEJMIJ GORSET</div>
+    </div>
+  </div>
+
+  <p class="process-note">
+    Nie chodzi o etykietę. Chodzi o rozpoznanie mechanizmu, który wpływa dziś na Twoje decyzje.
+    Widzenie wzorca to pierwszy krok do odzyskania wyboru.
+  </p>
+
+  <div style="text-align:center;padding-top:8px;">
+    <button class="btn" onclick="startQuiz()">Zaczynam →</button>
+  </div>
+
+</div>
+</div><!-- /screen-hero -->
+
+
+<!-- ══════════════════════════════ SCREEN 2: QUIZ ══════════════════════════════ -->
+<div id="screen-quiz" class="screen">
+<div class="wrap-sm">
+
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span class="progress-label" id="q-label-text">Pytanie 1 z 8</span>
+      <span class="progress-label" id="q-label-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="pfill" style="width:0%"></div></div>
+  </div>
+
+  <div class="quiz-instruction">
+    Wybieraj to, co dziś jest <strong>najbardziej prawdziwe</strong>. Nie szukaj odpowiedzi idealnej.<br>
+    Jeśli pasują dwie — zaznacz tę, przy której czujesz <strong>większe ukłucie prawdy</strong>.
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-block active" id="q1">
+    <div class="q-num">Pytanie 1 z 8</div>
+    <div class="q-hint">Wybierz 1 odpowiedź — tę najbardziej prawdziwą dziś.</div>
+    <div class="q-text">Kiedy ktoś czegoś ode mnie potrzebuje, najczęściej…</div>
+    <div class="opts">
+      <button class="opt" data-p="A" onclick="pick(this)"><span class="opt-tag">a</span> od razu próbuję pomóc — nawet kosztem swojego czasu</button>
+      <button class="opt" data-p="B" onclick="pick(this)"><span class="opt-tag">b</span> martwię się, czy zrobię to wystarczająco dobrze</button>
+      <button class="opt" data-p="C" onclick="pick(this)"><span class="opt-tag">c</span> czuję napięcie w ciele i trudno mi odmówić</button>
+      <button class="opt" data-p="A" onclick="pick(this)"><span class="opt-tag">d</span> mam poczucie, że od tego zależy, czy ktoś będzie ze mnie zadowolona</button>
+      <button class="opt opt-none" data-p="none" onclick="showClarify(this, 1)"><span class="opt-tag">e</span> Żadna z tych odpowiedzi nie jest mi bliska</button>
+    </div>
+    <div class="q-clarify" id="clarify-1" style="display:none;">
+      <div class="clarify-q">Wybierz to, co jest Ci bliższe:</div>
+      <div class="clarify-opts">
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 1)"><span class="clarify-tag">a</span> dziś tego u siebie nie widzę</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 1)"><span class="clarify-tag">b</span> nie mam tu jasności</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 1)"><span class="clarify-tag">c</span> czuję tylko delikatny ślad</button>
+      </div>
+    </div>
+    <div class="quiz-nav"><span></span><button class="btn next-btn" id="n1" onclick="next(1)">Dalej →</button></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-block" id="q2">
+    <div class="q-num">Pytanie 2 z 8</div>
+    <div class="q-hint">Wybierz 1 odpowiedź — tę najbardziej prawdziwą dziś.</div>
+    <div class="q-text">Gdy myślę o większych pieniądzach lub finansowym sukcesie…</div>
+    <div class="opts">
+      <button class="opt" data-p="D" onclick="pick(this)"><span class="opt-tag">a</span> chcę tego, ale coś mnie natychmiast hamuje</button>
+      <button class="opt" data-p="E" onclick="pick(this)"><span class="opt-tag">b</span> pojawia się lęk, że zmienię się albo stracę kogoś ważnego</button>
+      <button class="opt" data-p="B" onclick="pick(this)"><span class="opt-tag">c</span> czuję, że najpierw muszę zrobić coś więcej, żeby to „mieć prawo"</button>
+      <button class="opt" data-p="A" onclick="pick(this)"><span class="opt-tag">d</span> szybko myślę o tym, komu mogłabym to dać lub jak pomóc innym</button>
+      <button class="opt opt-none" data-p="none" onclick="showClarify(this, 2)"><span class="opt-tag">e</span> Żadna z tych odpowiedzi nie jest mi bliska</button>
+    </div>
+    <div class="q-clarify" id="clarify-2" style="display:none;">
+      <div class="clarify-q">Wybierz to, co jest Ci bliższe:</div>
+      <div class="clarify-opts">
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 2)"><span class="clarify-tag">a</span> dziś tego u siebie nie widzę</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 2)"><span class="clarify-tag">b</span> nie mam tu jasności</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 2)"><span class="clarify-tag">c</span> czuję tylko delikatny ślad</button>
+      </div>
+    </div>
+    <div class="quiz-nav"><button class="prev-btn" onclick="prev(2)">← Wróć</button><button class="btn next-btn" id="n2" onclick="next(2)">Dalej →</button></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-block" id="q3">
+    <div class="q-num">Pytanie 3 z 8</div>
+    <div class="q-hint">Wybierz 1 odpowiedź — tę najbardziej prawdziwą dziś.</div>
+    <div class="q-text">Moje ciało najczęściej…</div>
+    <div class="opts">
+      <button class="opt" data-p="C" onclick="pick(this)"><span class="opt-tag">a</span> napina się, gdy ktoś jest niezadowolony lub coś ode mnie chce</button>
+      <button class="opt" data-p="B" onclick="pick(this)"><span class="opt-tag">b</span> jest w napięciu — wewnętrzny krytyk nie daje mi chwili spokoju</button>
+      <button class="opt" data-p="A" onclick="pick(this)"><span class="opt-tag">c</span> czuję się ciężka — jakby nosiła w sobie coś, co nie jest moje</button>
+      <button class="opt" data-p="E" onclick="pick(this)"><span class="opt-tag">d</span> jest „odcięte" — trzymam się razem, nie pozwalam sobie czuć za dużo</button>
+      <button class="opt opt-none" data-p="none" onclick="showClarify(this, 3)"><span class="opt-tag">e</span> Żadna z tych odpowiedzi nie jest mi bliska</button>
+    </div>
+    <div class="q-clarify" id="clarify-3" style="display:none;">
+      <div class="clarify-q">Wybierz to, co jest Ci bliższe:</div>
+      <div class="clarify-opts">
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 3)"><span class="clarify-tag">a</span> dziś tego u siebie nie widzę</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 3)"><span class="clarify-tag">b</span> nie mam tu jasności</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 3)"><span class="clarify-tag">c</span> czuję tylko delikatny ślad</button>
+      </div>
+    </div>
+    <div class="quiz-nav"><button class="prev-btn" onclick="prev(3)">← Wróć</button><button class="btn next-btn" id="n3" onclick="next(3)">Dalej →</button></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-block" id="q4">
+    <div class="q-num">Pytanie 4 z 8</div>
+    <div class="q-hint">Wybierz 1 odpowiedź — tę najbardziej prawdziwą dziś.</div>
+    <div class="q-text">Gdy popełniam błąd lub coś mi nie wychodzi…</div>
+    <div class="opts">
+      <button class="opt" data-p="A" onclick="pick(this)"><span class="opt-tag">a</span> myślę od razu o tym, czy zawiodłam kogoś lub nie spełniłam oczekiwań</button>
+      <button class="opt" data-p="B" onclick="pick(this)"><span class="opt-tag">b</span> martwię się bardziej tym, co pomyślą inni niż tym, co czuję</button>
+      <button class="opt" data-p="E" onclick="pick(this)"><span class="opt-tag">c</span> wycofuję się i następnym razem wolę nie ryzykować</button>
+      <button class="opt" data-p="C" onclick="pick(this)"><span class="opt-tag">d</span> czuję to cieleśnie — wstyd, ucisk w klatce piersiowej, ciężar</button>
+      <button class="opt opt-none" data-p="none" onclick="showClarify(this, 4)"><span class="opt-tag">e</span> Żadna z tych odpowiedzi nie jest mi bliska</button>
+    </div>
+    <div class="q-clarify" id="clarify-4" style="display:none;">
+      <div class="clarify-q">Wybierz to, co jest Ci bliższe:</div>
+      <div class="clarify-opts">
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 4)"><span class="clarify-tag">a</span> dziś tego u siebie nie widzę</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 4)"><span class="clarify-tag">b</span> nie mam tu jasności</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 4)"><span class="clarify-tag">c</span> czuję tylko delikatny ślad</button>
+      </div>
+    </div>
+    <div class="quiz-nav"><button class="prev-btn" onclick="prev(4)">← Wróć</button><button class="btn next-btn" id="n4" onclick="next(4)">Dalej →</button></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-block" id="q5">
+    <div class="q-num">Pytanie 5 z 8</div>
+    <div class="q-hint">Wybierz 1 odpowiedź — tę najbardziej prawdziwą dziś.</div>
+    <div class="q-text">Gdy wyobrażam sobie, że jestem bardziej widoczna lub osiągam więcej…</div>
+    <div class="opts">
+      <button class="opt" data-p="E" onclick="pick(this)"><span class="opt-tag">a</span> pojawia się lęk — co stracę, co powiedzą bliscy, czy to będzie bezpieczne</button>
+      <button class="opt" data-p="B" onclick="pick(this)"><span class="opt-tag">b</span> boję się, że ktoś zobaczy, że nie jestem tak dobra jak myślą</button>
+      <button class="opt" data-p="A" onclick="pick(this)"><span class="opt-tag">c</span> odkładam to — najpierw inni, potem ja, kiedyś, może</button>
+      <button class="opt" data-p="D" onclick="pick(this)"><span class="opt-tag">d</span> coś w środku mówi, że to nie dla takich kobiet jak ja</button>
+      <button class="opt opt-none" data-p="none" onclick="showClarify(this, 5)"><span class="opt-tag">e</span> Żadna z tych odpowiedzi nie jest mi bliska</button>
+    </div>
+    <div class="q-clarify" id="clarify-5" style="display:none;">
+      <div class="clarify-q">Wybierz to, co jest Ci bliższe:</div>
+      <div class="clarify-opts">
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 5)"><span class="clarify-tag">a</span> dziś tego u siebie nie widzę</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 5)"><span class="clarify-tag">b</span> nie mam tu jasności</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 5)"><span class="clarify-tag">c</span> czuję tylko delikatny ślad</button>
+      </div>
+    </div>
+    <div class="quiz-nav"><button class="prev-btn" onclick="prev(5)">← Wróć</button><button class="btn next-btn" id="n5" onclick="next(5)">Dalej →</button></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-block" id="q6">
+    <div class="q-num">Pytanie 6 z 8</div>
+    <div class="q-hint">Wybierz 1 odpowiedź — tę najbardziej prawdziwą dziś.</div>
+    <div class="q-text">W bliskich relacjach najczęściej czuję, że…</div>
+    <div class="opts">
+      <button class="opt" data-p="A" onclick="pick(this)"><span class="opt-tag">a</span> daję więcej, niż dostaję — i boję się powiedzieć to głośno</button>
+      <button class="opt" data-p="B" onclick="pick(this)"><span class="opt-tag">b</span> muszę zasługiwać — miłość nie jest czymś, co po prostu jest</button>
+      <button class="opt" data-p="E" onclick="pick(this)"><span class="opt-tag">c</span> trzymam kogoś na dystans — prawdziwa bliskość mnie trochę przeraża</button>
+      <button class="opt" data-p="C" onclick="pick(this)"><span class="opt-tag">d</span> biorę na siebie ich nastroje — ich spokój zależy ode mnie</button>
+      <button class="opt opt-none" data-p="none" onclick="showClarify(this, 6)"><span class="opt-tag">e</span> Żadna z tych odpowiedzi nie jest mi bliska</button>
+    </div>
+    <div class="q-clarify" id="clarify-6" style="display:none;">
+      <div class="clarify-q">Wybierz to, co jest Ci bliższe:</div>
+      <div class="clarify-opts">
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 6)"><span class="clarify-tag">a</span> dziś tego u siebie nie widzę</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 6)"><span class="clarify-tag">b</span> nie mam tu jasności</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 6)"><span class="clarify-tag">c</span> czuję tylko delikatny ślad</button>
+      </div>
+    </div>
+    <div class="quiz-nav"><button class="prev-btn" onclick="prev(6)">← Wróć</button><button class="btn next-btn" id="n6" onclick="next(6)">Dalej →</button></div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-block" id="q7">
+    <div class="q-num">Pytanie 7 z 8</div>
+    <div class="q-hint">Wybierz 1 odpowiedź — tę najbardziej prawdziwą dziś.</div>
+    <div class="q-text">Mój wewnętrzny głos najczęściej mówi…</div>
+    <div class="opts">
+      <button class="opt" data-p="B" onclick="pick(this)"><span class="opt-tag">a</span> „musisz być lepsza, bardziej zorganizowana, bardziej silna"</button>
+      <button class="opt" data-p="A" onclick="pick(this)"><span class="opt-tag">b</span> „nie możesz zawieść — inni na Ciebie liczą"</button>
+      <button class="opt" data-p="D" onclick="pick(this)"><span class="opt-tag">c</span> „pieniądze to coś, przy czym trzeba uważać — nie bierz za dużo"</button>
+      <button class="opt" data-p="E" onclick="pick(this)"><span class="opt-tag">d</span> „jeśli osiągniesz zbyt dużo albo będziesz zbyt widoczna, coś stracisz"</button>
+      <button class="opt opt-none" data-p="none" onclick="showClarify(this, 7)"><span class="opt-tag">e</span> Żadna z tych odpowiedzi nie jest mi bliska</button>
+    </div>
+    <div class="q-clarify" id="clarify-7" style="display:none;">
+      <div class="clarify-q">Wybierz to, co jest Ci bliższe:</div>
+      <div class="clarify-opts">
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 7)"><span class="clarify-tag">a</span> dziś tego u siebie nie widzę</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 7)"><span class="clarify-tag">b</span> nie mam tu jasności</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 7)"><span class="clarify-tag">c</span> czuję tylko delikatny ślad</button>
+      </div>
+    </div>
+    <div class="quiz-nav"><button class="prev-btn" onclick="prev(7)">← Wróć</button><button class="btn next-btn" id="n7" onclick="next(7)">Dalej →</button></div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="q-block" id="q8">
+    <div class="q-num">Pytanie 8 z 8</div>
+    <div class="q-hint">Wybierz 1 odpowiedź — tę najbardziej prawdziwą dziś.</div>
+    <div class="q-text">Co najczęściej zatrzymuje mnie przed zmianą, której chcę?</div>
+    <div class="opts">
+      <button class="opt" data-p="A" onclick="pick(this)"><span class="opt-tag">a</span> poczucie winy — że zawiodę kogoś albo będę „samolubna"</button>
+      <button class="opt" data-p="B" onclick="pick(this)"><span class="opt-tag">b</span> perfekcjonizm — zacznę dopiero gdy będę naprawdę gotowa</button>
+      <button class="opt" data-p="C" onclick="pick(this)"><span class="opt-tag">c</span> ciało daje sygnały — zmęczenie, napięcie, emocje, których nie słucham</button>
+      <button class="opt" data-p="D" onclick="pick(this)"><span class="opt-tag">d</span> przekonanie, że na więcej jeszcze nie zasłużyłam</button>
+      <button class="opt opt-none" data-p="none" onclick="showClarify(this, 8)"><span class="opt-tag">e</span> Żadna z tych odpowiedzi nie jest mi bliska</button>
+    </div>
+    <div class="q-clarify" id="clarify-8" style="display:none;">
+      <div class="clarify-q">Wybierz to, co jest Ci bliższe:</div>
+      <div class="clarify-opts">
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 8)"><span class="clarify-tag">a</span> dziś tego u siebie nie widzę</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 8)"><span class="clarify-tag">b</span> nie mam tu jasności</button>
+        <button class="clarify-opt" data-p="0" onclick="pickClarify(this, 8)"><span class="clarify-tag">c</span> czuję tylko delikatny ślad</button>
+      </div>
+    </div>
+    <div class="quiz-nav"><button class="prev-btn" onclick="prev(8)">← Wróć</button><button class="btn next-btn" id="n8" onclick="showResult()">Zobacz swój wynik →</button></div>
+  </div>
+
+</div>
+</div><!-- /screen-quiz -->
+
+
+<!-- ══════════════════════════════ SCREEN 3: RESULT ══════════════════════════════ -->
+<div id="screen-result" class="screen">
+<div class="wrap-md">
+
+  <div id="result-main">
+  <!-- header -->
+  <div class="result-header">
+    <div class="result-kicker">Twój wynik · wzorzec dominujący</div>
+    <div class="result-pattern-name" id="r-name">—</div>
+    <div class="result-impact" id="r-impact">—</div>
+  </div>
+
+  <!-- how it works -->
+  <div class="r-block">
+    <div class="r-block-label">Jak ten wzorzec działa</div>
+    <p id="r-how"></p>
+  </div>
+
+  <!-- signs -->
+  <div class="r-block">
+    <div class="r-block-label">Po czym go poznajesz</div>
+    <ul class="r-list" id="r-signs"></ul>
+    <div class="day-chip" id="r-day"></div>
+  </div>
+
+  <!-- cost -->
+  <div class="r-block">
+    <div class="r-block-label">Jaki ma koszt</div>
+    <p id="r-cost"></p>
+    <p class="cost-bridge" id="r-bridge"></p>
+  </div>
+
+  <!-- recover — NEW KEY SECTION -->
+  <div class="recover-block">
+    <div class="recover-label">Co zaczyna się zmieniać, kiedy ten wzorzec puszcza</div>
+    <ul class="recover-list" id="r-recover"></ul>
+  </div>
+
+  <!-- second pattern block -->
+  <div class="r-second" id="r-second" style="display:none;">
+    <div class="r-second-label">Drugi silny wzorzec</div>
+    <div class="r-second-name" id="r-second-name">—</div>
+    <div class="r-second-impact" id="r-second-impact">—</div>
+  </div>
+
+  <!-- CTAs -->
+  <p style="font-family:var(--sans);font-size:.88rem;color:var(--mid);text-align:center;margin:28px 0 16px;line-height:1.6;">
+    To jest Twój punkt wejścia. Jeśli chcesz przejść od wglądu do zmiany, wybierz kolejny krok.
+  </p>
+  <div class="btn-row" style="flex-wrap:wrap;justify-content:center;gap:12px;">
+    <button class="btn" onclick="showExercise()">Zrób krótkie ćwiczenie →</button>
+    <button class="btn" onclick="showWorkshop();setTimeout(function(){var el=document.getElementById('pkg-section');if(el)el.scrollIntoView({behavior:'smooth'});},300)">Zobacz pakiety teraz →</button>
+    <button class="btn-ghost" onclick="showWorkshop()">Przejdź do warsztatu</button>
+  </div>
+  <div style="text-align:center;margin-top:14px;">
+    <button class="restart-btn" onclick="resetQuiz();show('screen-hero')">Zrób test od nowa</button>
+  </div>
+
+  </div><!-- /result-main -->
+
+  <!-- SOFT RESULT: 2–3 realne odpowiedzi -->
+  <div id="result-soft" style="display:none;">
+    <div class="result-header">
+      <div class="result-kicker">Twój wynik · delikatny kierunek</div>
+      <div class="result-pattern-name" id="rs-name">—</div>
+      <div class="result-impact" id="rs-impact">—</div>
+    </div>
+    <div class="r-block">
+      <p style="font-size:1.05rem;line-height:1.75;color:var(--ink);">Widać delikatny kierunek, ale nie jest on jeszcze jednoznaczny. To normalne — niektóre wzorce działają subtelnie albo nakładają się na siebie w kilku obszarach jednocześnie.</p>
+      <p style="font-size:.95rem;line-height:1.65;color:var(--mid);margin-top:12px;">Możesz zobaczyć więcej, jeśli pójdziesz głębiej. Warsztat <em>ODZYSKAJ SIEBIE</em> prowadzi przez ten proces krok po kroku — od mechanizmu do konkretnej zmiany.</p>
+    </div>
+    <div class="btn-row" style="flex-wrap:wrap;justify-content:center;gap:12px;margin-top:28px;">
+      <button class="btn" onclick="showWorkshop()">Idź dalej: ODZYSKAJ SIEBIE →</button>
+      <button class="btn-ghost" onclick="showExercise()">Zrób krótkie ćwiczenie</button>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="restart-btn" onclick="resetQuiz();show('screen-hero')">Zrób test od nowa</button>
+    </div>
+  </div><!-- /result-soft -->
+
+  <!-- NO PATTERN: 0–1 realna odpowiedź -->
+  <div id="result-none" style="display:none;">
+    <div class="result-header">
+      <div class="result-kicker">Twój wynik</div>
+      <div class="result-pattern-name" style="font-size:1.35rem;line-height:1.3;">Nie widać jednego wzorca</div>
+      <div class="result-impact">W tym szybkim teście nie widać dziś jednego dominującego obszaru.</div>
+    </div>
+    <div class="r-block">
+      <p style="font-size:1.05rem;line-height:1.75;color:var(--ink);">To może oznaczać dwie rzeczy: albo w tych obszarach masz dziś więcej luzu i elastyczności — albo wzorzec działa na głębszym poziomie i potrzeba głębszego wejścia, żeby go zobaczyć.</p>
+      <p style="font-size:.95rem;line-height:1.65;color:var(--mid);margin-top:12px;">Warsztat <em>ODZYSKAJ SIEBIE</em> pomaga zobaczyć to, czego quiz nie pokazuje: konkretny mechanizm starej gry i sposób wyjścia z niej.</p>
+    </div>
+    <div class="btn-row" style="flex-wrap:wrap;justify-content:center;gap:12px;margin-top:28px;">
+      <button class="btn" onclick="showWorkshop()">Dowiedz się więcej o warsztacie →</button>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="restart-btn" onclick="resetQuiz();show('screen-hero')">Zrób test od nowa</button>
+    </div>
+  </div><!-- /result-none -->
+
+</div>
+</div><!-- /screen-result -->
+
+
+<!-- ══════════════════════════════ SCREEN 4: EXERCISE ══════════════════════════════ -->
+<div id="screen-exercise" class="screen">
+<div class="wrap-sm">
+
+  <div class="coord-line"><span class="coord-text">krok pośredni · mikroćwiczenie</span></div>
+
+  <div class="ex-optional-note">To ćwiczenie jest opcjonalne — możesz też od razu przejść do dopasowanej ścieżki warsztatu.</div>
+
+  <div class="ex-header">
+    <div class="ex-label">Krótki krok, zanim pójdziesz dalej</div>
+    <h2 class="serif-h2" id="ex-title">—</h2>
+    <p style="font-size:.88rem;color:var(--soft);margin-top:10px;font-style:italic;line-height:1.7;">
+      Zatrzymaj się na chwilę i odpowiedz szczerze. Nie chodzi o wymyślenie dobrej odpowiedzi —
+      chodzi o to, żeby zacząć naprawdę widzieć siebie.
+    </p>
+  </div>
+
+  <div id="ex-qs"></div>
+
+  <div class="ex-closer" id="ex-closer">—</div>
+
+  <div class="btn-row" style="margin-top:36px;flex-wrap:wrap;justify-content:center;gap:12px;">
+    <button class="btn" onclick="showWorkshop();setTimeout(function(){var el=document.getElementById('pkg-section');if(el)el.scrollIntoView({behavior:'smooth'});},300)">Przejdź do pakietów →</button>
+    <button class="btn-ghost" onclick="showWorkshop()">Przejdź do warsztatu ZDEJMIJ GORSET →</button>
+  </div>
+
+</div>
+</div><!-- /screen-exercise -->
+
+
+<!-- ══════════════════════════════ SCREEN 5: WORKSHOP ══════════════════════════════ -->
+<div id="screen-workshop" class="screen">
+<div class="ws-wrap">
+
+  <!-- SKIP CTA -->
+  <div class="skip-cta">
+    <button onclick="var el=document.getElementById('pkg-section');if(el)el.scrollIntoView({behavior:'smooth'})">Pomiń — chcę od razu zobaczyć pakiety ↓</button>
+  </div>
+
+  <!-- BLOK 1: SAMO ROZPOZNANIE NIE WYSTARCZY -->
+  <div class="why-alone">
+    <div class="why-alone-label">Samo rozpoznanie wzorca to dopiero początek</div>
+    <h3>Widzenie wzorca nie wystarczy,<br>jeśli nadal wracasz do tego samego.</h3>
+    <p>
+      Twój wynik wskazuje miejsce, w którym wzorzec działa dziś najgłośniej.
+      Ale prawdziwa zmiana zaczyna się tam, gdzie rozpoznanie zamienia się w działanie.
+    </p>
+    <div class="why-points">
+      <div class="why-point">bo przejście przez wszystkie 5 obszarów życia pokazuje pełny obraz — nie tylko jeden wynik</div>
+      <div class="why-point">bo dostajesz konkretny proces pracy, a nie tylko nazwę wzorca</div>
+      <div class="why-point">bo zamieniasz wiedzę w realną zmianę codziennych decyzji i reakcji</div>
+    </div>
+  </div>
+
+  <!-- BLOK 1b: SECOND PATTERN NOTE -->
+  <div id="ws-sec-note" style="display:none;background:var(--off);border:1px dashed var(--line);border-radius:10px;padding:16px 22px;margin:0 0 28px;font-family:var(--sans);font-size:.88rem;color:var(--mid);line-height:1.6;">
+    <span style="font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:6px;">Drugi silny wzorzec w Twoim profilu</span>
+    <span class="ws-sec-name" style="font-family:var(--serif);font-size:1rem;color:var(--ink);font-weight:600;"></span>
+    <span style="display:block;margin-top:4px;">Ten wzorzec też pojawi się w warsztacie — w innym dniu, ale z podobną siłą.</span>
+  </div>
+
+  <!-- BLOK 2: ZDEJMIJ GORSET -->
+  <div class="ws-eyebrow">Warsztat 5-dniowy online</div>
+  <h2 class="ws-title">ZDEJMIJ GORSET</h2>
+  <p class="ws-sub">
+    Pięć dni. Pięć obszarów życia. Jeden wzorzec po drugim —
+    bo zapis rzadko działa tylko w jednym miejscu Twojego życia.
+  </p>
+
+  <!-- BLOK 3: MAPA 5 DNI -->
+  <div class="days-list" id="days-list">
+    <div class="day" data-p="A">
+      <div class="day-eyebrow">Dzień 1</div>
+      <div class="day-name">Relacje</div>
+      <div class="day-stake">Zobaczysz, gdzie oddajesz siebie za spokój, bliskość albo akceptację.</div>
+    </div>
+    <div class="day" data-p="B">
+      <div class="day-eyebrow">Dzień 2</div>
+      <div class="day-name">Relacja ze sobą</div>
+      <div class="day-stake">Rozpoznasz, gdzie żyjesz według cudzego obrazu zamiast własnego głosu.</div>
+    </div>
+    <div class="day" data-p="C">
+      <div class="day-eyebrow">Dzień 3</div>
+      <div class="day-name">Ciało</div>
+      <div class="day-stake">Usłyszysz to, co ciało pokazuje napięciem, zmęczeniem i przeciążeniem.</div>
+    </div>
+    <div class="day" data-p="D">
+      <div class="day-eyebrow">Dzień 4</div>
+      <div class="day-name">Pieniądze</div>
+      <div class="day-stake">Zobaczysz, gdzie wina, lęk lub opór zatrzymują Cię przed „mieć więcej".</div>
+    </div>
+    <div class="day" data-p="E">
+      <div class="day-eyebrow">Dzień 5</div>
+      <div class="day-name">Sukces</div>
+      <div class="day-stake">Rozpoznasz, gdzie boisz się widoczności, wzrostu albo własnej siły.</div>
+    </div>
+  </div>
+
+  <p class="ws-map-note">
+    Twój wynik pokazuje punkt wejścia. Warsztat prowadzi Cię przez całą mapę.
+  </p>
+
+  <hr class="sep-light">
+
+  <div id="pkg-section" style="scroll-margin-top:60px;"></div>
+  <div class="pkg-compare">
+    <strong>Pakiet 1</strong> = sam warsztat &nbsp;·&nbsp;
+    <strong>Pakiet 2</strong> = warsztat + Odzyskaj Siebie &nbsp;·&nbsp;
+    <strong>Pakiet 3</strong> = pełna ścieżka + Królowa Lodu
+  </div>
+  <!-- BLOK 4: PAKIETY -->
+  <div class="pkg-header">
+    <h2>Wybierz swoją ścieżkę</h2>
+    <p>
+      Warsztat ZDEJMIJ GORSET jest Twoim pierwszym krokiem.
+      Wybierz, jak głęboko chcesz wejść w zmianę.
+    </p>
+  </div>
+
+  <div class="depth-labels">
+    <div class="depth-label">Podstawy zmiany</div>
+    <div class="depth-label">Głębsza praca</div>
+    <div class="depth-label">Pełna transformacja</div>
+  </div>
+
+  <div class="pkgs">
+
+    <!-- PKG 1 -->
+    <div class="pkg" id="pkg1">
+      <div class="pkg-name">Zdejmij Gorset</div>
+      <div class="pkg-variant">Podstawy Przemiany</div>
+      <div class="pkg-price">647 <span>zł</span></div>
+      <div class="pkg-for">
+        Dla Ciebie, jeśli chcesz przejść przez pełen 5-dniowy warsztat i zobaczyć,
+        jak wzorzec działa w całej mapie Twojego życia.
+      </div>
+      <ul class="pkg-includes">
+        <li>5-dniowy warsztat online</li>
+        <li>5 wzorców · 5 obszarów życia</li>
+        <li>Materiały do każdego dnia</li>
+        <li>Dostęp do nagrań</li>
+      </ul>
+      <a class="pkg-btn" href="https://madrosckobiety.pl/produkt/zdejmij_gorset_podstawy_przemiany/" target="_blank">Wybieram podstawy przemiany</a>
+    </div>
+
+    <!-- PKG 2 — featured -->
+    <div class="pkg featured" id="pkg2">
+      <div class="pkg-badge">Najchętniej wybierany</div>
+      <div class="pkg-name" style="margin-top:20px;">Zdejmij Gorset</div>
+      <div class="pkg-variant">Głębszy Powrót do Siebie</div>
+      <div class="pkg-price">749 <span>zł</span></div>
+      <div class="pkg-for">
+        Dla Ciebie, jeśli chcesz nie tylko rozpoznać wzorzec, ale też zacząć realnie go zmieniać
+        po warsztacie — z pomocą programu Odzyskaj Siebie.
+      </div>
+      <ul class="pkg-includes">
+        <li>5-dniowy warsztat online</li>
+        <li>Warsztat ODZYSKAJ SIEBIE</li>
+        <li>14-dniowe kotwice trwałej zmiany</li>
+        <li>Materiały i dostęp do nagrań</li>
+      </ul>
+      <a class="pkg-btn" href="https://madrosckobiety.pl/produkt/zdejmij_gorset_glebszy_powrot_do_siebie/" target="_blank">Wybieram głębszy powrót do siebie</a>
+    </div>
+
+    <!-- PKG 3 -->
+    <div class="pkg" id="pkg3">
+      <div class="pkg-name">Zdejmij Gorset</div>
+      <div class="pkg-variant">Pełna Transformacja</div>
+      <div class="pkg-price">897 <span>zł</span></div>
+      <div class="pkg-for">
+        Dla Ciebie, jeśli czujesz, że pod spodem działa jeszcze głębszy mechanizm
+        chłodu, kontroli lub dystansu — i chcesz dotrzeć do tego źródła.
+      </div>
+      <ul class="pkg-includes">
+        <li>5-dniowy warsztat online</li>
+        <li>Warsztat ODZYSKAJ SIEBIE</li>
+        <li>Masterclass KRÓLOWA LODU</li>
+        <li>Pełny dostęp do wszystkich nagrań</li>
+      </ul>
+      <a class="pkg-btn" href="https://madrosckobiety.pl/produkt/zdejmij_gorset_pelna_transformacja/" target="_blank">Wybieram pełną transformację</a>
+    </div>
+
+  </div><!-- /pkgs -->
+
+  <!-- KL note for E-pattern -->
+  <div class="kl-note" id="kl-note">
+    <strong>Twój wynik wskazuje silny element chłodu, dystansu lub kontroli emocjonalnej.</strong>
+    Masterclass KRÓLOWA LODU w Pakiecie 3 to dodatkowa warstwa pracy specjalnie dla kobiet,
+    które czują, że trzymają innych na odległość i boją się prawdziwej bliskości.
+  </div>
+
+  <!-- BLOK 5: KOŃCOWE CTA -->
+  <div class="final-cta">
+    <p class="final-cta-quote">Nie musisz już żyć pod presją tego, co działa w tle.</p>
+    <button class="btn" style="font-size:.82rem;padding:18px 52px;" onclick="document.getElementById('pkg-section').scrollIntoView({behavior:'smooth'})">
+      Wchodzę do warsztatu ZDEJMIJ GORSET
+    </button>
+    <p>
+      Masz pytania? Napisz do nas:
+      <a href="mailto:info@madrosckobiety.pl">info@madrosckobiety.pl</a>
+      &nbsp;·&nbsp;
+      <a href="https://madrosckobiety.pl/sklep/" target="_blank">madrosckobiety.pl/sklep</a>
+    </p>
+  </div>
+
+</div>
+</div><!-- /screen-workshop -->
+
+
+<!-- ══════════════════════════════ JAVASCRIPT ══════════════════════════════ -->
+<script>
+// ── STATE ──
+const sc = {A:0,B:0,C:0,D:0,E:0};
+let cq = 1;
+const TQ = 8;
+
+// ── PATTERNS ──
+const P = {
+  A:{
+    name:"Wzorzec poświęcania siebie",
+    impact:"Dajesz więcej, niż dostajesz — i długo nie mówisz tego na głos.",
+    how:"Dajesz więcej, niż dostajesz — i długo nie mówisz tego na głos. Gdzieś nauczyłaś się, że bycie dobrą kobietą oznacza bycie dla innych. Twoje potrzeby schodzą na dalszy plan nie dlatego, że nie są ważne — tylko dlatego, że coś głęboko przekonało Cię, że zasługujesz na miłość, akceptację i spokój wyłącznie wtedy, gdy dajesz.",
+    signs:["zanim pomyślisz o sobie, już jesteś przy innych — automatycznie","trudno Ci odmówić, zanim w ogóle sprawdzisz, czego naprawdę chcesz","granice stawiasz z poczuciem winy, a nie z poczuciem wyboru","czujesz się zmęczona dawaniem, ale nie potrafisz przestać","relacje są nierówne — i to też bierzesz na siebie"],
+    day:"Dzień 1 — Relacje — tu zaczyna się Twoja praca w ZDEJMIJ GORSET",
+    cost:"Ten wzorzec zabiera Ci czas, energię i możliwość głębokiego kontaktu ze sobą. Dajesz z lęku, a nie z wyboru — i to z czasem wyczerpuje nawet najsilniejsze kobiety.",
+    bridge:"Widzenie wzorca nie zmienia wszystkiego od razu, ale właśnie tu odzyskujesz pierwszy realny wybór.",
+    recover:["wraca więcej spokoju — mniej życia na cudzych warunkach","łatwiej rozpoznać, co jest Twoje, a co bierzesz z przyzwyczajenia","pojawia się więcej miejsca na własne potrzeby bez poczucia winy","relacje stają się bardziej równe — dajesz z wyboru, nie z lęku"],
+    exTitle:"Co naprawdę jest Twoje?",
+    exQs:[
+      {l:"Pytanie 1",t:"Co najczęściej biorę na siebie, choć nie jest moje?"},
+      {l:"Pytanie 2",t:"Jaką cenę płacę za to, że ten wzorzec nadal działa w moim życiu?"},
+      {l:"Pytanie 3",t:"Co mogłoby się zmienić, gdybym przestała dawać z lęku?"}
+    ],
+    exClose:"To nie jest ćwiczenie na wymyślenie dobrej odpowiedzi. To moment, w którym zaczynasz naprawdę widzieć siebie."
+  },
+  B:{
+    name:"Wzorzec cudzych oczekiwań",
+    impact:"Żyjesz bardziej według oczekiwań niż według własnego wewnętrznego głosu.",
+    how:"Żyjesz bardziej według oczekiwań niż według własnego wewnętrznego głosu. Za perfekcjonizmem kryje się jeden głęboki lęk: że jeśli ktoś zobaczy Cię prawdziwą — okaże się, że nie jesteś wystarczająca. Twój wewnętrzny krytyk jest bardziej wymagający niż jakikolwiek zewnętrzny szef — i nigdy nie daje Ci dnia wolnego.",
+    signs:["zaczniesz, gdy 'będziesz gotowa' — a ten moment zawsze się przesuwa","wewnętrzny krytyk nie odpuszcza nawet przy sukcesach","wstydzisz się prosić o pomoc — to znaczyłoby, że 'nie dajesz rady'","bardziej kontrolujesz niż ufasz — sobie i innym","masz poczucie, że żyjesz obrazem, który nie jest do końca Twój"],
+    day:"Dzień 2 — Relacja ze sobą — tu zaczyna się Twoja praca w ZDEJMIJ GORSET",
+    cost:"Perfekcjonizm nie jest wysokim standardem — to mechanizm ucieczki przed lękiem odkrycia. Wyczerpujesz się utrzymując obraz, który nie jest naprawdę Twój.",
+    bridge:`Ten koszt nie musi być Twoją codziennością — o ile nie zatrzymasz się na samym „wiem”.`,
+    recover:["więcej kontaktu z własnym głosem — zamiast z krytykiem","mniej życia pod presją bycia wystarczającą","większa lekkość w podejmowaniu decyzji","możliwość proszenia o pomoc bez wstydu"],
+    exTitle:"Czyje oczekiwania nosisz?",
+    exQs:[
+      {l:"Pytanie 1",t:"Czyich oczekiwań staram się dziś sprostać — i czy to są moje oczekiwania czy cudze?"},
+      {l:"Pytanie 2",t:"Co mówi do mnie wewnętrzny krytyk, gdy popełniam błąd?"},
+      {l:"Pytanie 3",t:"Co mogłoby się zmienić, gdybym przestała żyć według cudzego obrazu?"}
+    ],
+    exClose:"Za perfekcjonizmem zawsze stoi konkretna historia. To jest dobry moment, żeby zacząć ją widzieć."
+  },
+  C:{
+    name:"Wzorzec napięcia i emocji w ciele",
+    impact:"To nie jest tylko zmęczenie. To ślad mechanizmu, który od dawna mówi Twojemu ciału: noś więcej, wytrzymaj dłużej, nie zatrzymuj się.",
+    how:"Twoje ciało reaguje szybciej niż rozum. Napina się, przeciąża i bierze na siebie więcej, niż naprawdę do Ciebie należy. Nie chodzi tylko o ciało fizyczne. Chodzi o to, że gdzieś nauczyłaś się nosić cudze emocje, napięcia i oczekiwania — żeby utrzymać bliskość, spokój albo poczucie bycia ważną.",
+    signs:["trudno Ci odmówić, zanim w ogóle zdążysz sprawdzić, czego naprawdę chcesz","napięcie w ciele pojawia się szybciej niż świadoma decyzja","czujesz się zmęczona nie tylko fizycznie, ale też emocjonalnie","Twoje potrzeby schodzą na dalszy plan, zwłaszcza gdy inni czegoś potrzebują","próbujesz 'zjeść', wyciszyć albo przeczekać coś, czego nie umiesz jeszcze nazwać"],
+    day:"Dzień 3 — Ciało — tu zaczyna się Twoja praca w ZDEJMIJ GORSET",
+    cost:"Kiedy ten wzorzec działa długo, ciało zaczyna mówić głośniej — napięciem, przeciążeniem, zmęczeniem, a czasem odcięciem od własnego centrum. Im dłużej niesiesz to, co nie jest Twoje, tym trudniej usłyszeć siebie.",
+    bridge:"Dobra wiadomość jest taka, że kiedy widzisz mechanizm, możesz zacząć go rozluźniać — zamiast nadal żyć pod jego presją.",
+    recover:["wraca więcej spokoju w ciele — mniej życia pod cudzym napięciem","łatwiej odróżnić swoje emocje od emocji innych","pojawia się więcej energii, bo przestajesz nieść to, co nie Twoje","ciało staje się sprzymierzeńcem, nie obciążeniem"],
+    exTitle:"Co niesie Twoje ciało?",
+    exQs:[
+      {l:"Pytanie 1",t:"Co najczęściej biorę na siebie, choć nie jest moje?"},
+      {l:"Pytanie 2",t:"Jaką cenę płaci moje ciało za to, że ten wzorzec nadal działa?"},
+      {l:"Pytanie 3",t:"Co mogłoby się zmienić, gdybym zaczęła słuchać tego, co ciało mi pokazuje?"}
+    ],
+    exClose:"Ciało nie kłamie. Ono pokazuje to, czego umysł jeszcze nie nazwał."
+  },
+  D:{
+    name:"Wzorzec oporu wobec pieniędzy",
+    impact:"Chęć 'mieć więcej' zderza się w Tobie z napięciem, winą albo lękiem przed oceną.",
+    how:"Chęć 'mieć więcej' zderza się w Tobie z napięciem, winą albo lękiem przed oceną. To nie jest brak ambicji. To głęboko zapisane przekonania — często przejęte z domu — że pieniądze są dla 'innych', że kobieta z pieniędzmi jest 'inna', że bogactwo wiąże się z utratą czegoś ważnego.",
+    signs:["pragniesz więcej, ale coś Cię zatrzymuje, zanim zdążysz zacząć działać","przy podwyżce lub wycenianiu własnych usług czujesz napięcie","łatwiej Ci dawać niż przyjmować — pieniądze, wsparcie, uznanie","sukces finansowy wyobrażasz sobie jako coś skomplikowanego lub 'nie dla mnie'","szybko myślisz o tym, komu mogłabyś to dać, zanim pozwolisz sobie na przyjemność"],
+    day:"Dzień 4 — Pieniądze — tu zaczyna się Twoja praca w ZDEJMIJ GORSET",
+    cost:"Blok finansowy nie jest kwestią braku umiejętności. To kwestia przekonań, które działają poza świadomością — i kosztują Cię rok po roku.",
+    bridge:"Widzenie wzorca nie zmienia wszystkiego od razu, ale właśnie tu odzyskujesz pierwszy realny wybór.",
+    recover:["więcej lekkości w podejmowaniu decyzji finansowych","mniej poczucia winy przy wydawaniu i zarabianiu","łatwiej przyjmować — pieniądze, uznanie, wsparcie","pragnąć więcej przestaje się kojarzyć z czymś złym"],
+    exTitle:"Co mówi w Tobie stary przekaz?",
+    exQs:[
+      {l:"Pytanie 1",t:"Jakie pierwsze zdanie o pieniądzach pamiętam z domu?"},
+      {l:"Pytanie 2",t:"Czego boję się, że stracę lub zmienię, jeśli zarobię więcej?"},
+      {l:"Pytanie 3",t:"Co mogłoby się zmienić, gdybym przestała wierzyć w ten stary przekaz?"}
+    ],
+    exClose:"Pieniądze nie są problemem finansowym. Są problemem przekonaniowym. I to można zmienić."
+  },
+  E:{
+    name:"Wzorzec lęku przed sukcesem i widocznością",
+    impact:"Boisz się nie porażki — boisz się, że sukces coś Ci zabierze albo Cię zmieni.",
+    how:"Sukces Cię pociąga — ale budzi lęk. Boisz się nie porażki, ale tego, co nastąpi, gdy osiągniesz więcej: co stracisz, co się zmieni, jak zareaguje rodzina. Gdzieś głęboko masz przekonanie, że sukces i bycie 'dobrą kobietą' stoją ze sobą w konflikcie. I ten lęk często działa przez chłód, dystans lub kontrolę — żeby chronić się przed ewentualnym bólem.",
+    signs:["odkładasz prawdziwe pragnienia 'na później' — i to 'później' wciąż się przesuwa","sukcesy osiągasz, ale pomniejszasz je albo czujesz w nich pustkę","wyobrażasz sobie reakcję rodziny przed podjęciem ważnej decyzji","trzymasz innych na dystans — bliskość trochę Cię przeraża","coś w Tobie trzyma się razem i pilnuje, żeby nie być 'za bardzo'"],
+    day:"Dzień 5 — Sukces — tu zaczyna się Twoja praca w ZDEJMIJ GORSET",
+    cost:"Wzorzec lęku przed widocznością sprawia, że Twoje talenty i marzenia czekają w kolejce, która nigdy nie rusza. Sukces, który kosztuje Cię tożsamość — nie jest sukcesem.",
+    bridge:"Ten koszt nie musi być Twoją codziennością — o ile nie zatrzymasz się na samym 'wiem'.",
+    recover:["możliwość definiowania sukcesu na własnych warunkach","mniej napięcia przy widoczności — więcej obecności","łatwiej iść do przodu bez sprawdzania, co powiedzą inni","sukces nie musi już kosztować Cię relacji ani tożsamości"],
+    exTitle:"Twoje twarze sukcesu",
+    exQs:[
+      {l:"Pytanie 1",t:"Czego naprawdę pragnę — i dlaczego jeszcze tego nie zaczęłam?"},
+      {l:"Pytanie 2",t:"Kogo boję się zawieść lub komu boję się 'zagrozić' swoim sukcesem?"},
+      {l:"Pytanie 3",t:"Czy nadal byłabym 'dobrą' kobietą, gdybym to osiągnęła?"}
+    ],
+    exClose:"Boisz się nie porażki — boisz się, że sukces coś Ci zabierze. Na warsztacie zobaczysz, że tak nie musi być."
+  }
+};
+
+// ── QUIZ ──
+// stan quizu
+let answers = {};
+let _cq = 1;  // local alias — cq still used by updProg
+// zerowanie punktów
+function resetScores() {
+  sc.A = 0; sc.B = 0; sc.C = 0; sc.D = 0; sc.E = 0;
+}
+// przeliczenie wyniku wyłącznie z bieżących odpowiedzi
+function calculateScores() {
+  resetScores();
+  Object.values(answers).forEach(function(letter) {
+    if (letter && sc.hasOwnProperty(letter)) sc[letter]++;
+  });
+}
+// pełny reset quizu
+function resetQuiz() {
+  answers = {};
+  cq = 1;
+  window._dom = null;
+  window._sec = null;
+  resetScores();
+  document.querySelectorAll('.q-block').forEach(function(block, index) {
+    block.classList.toggle('active', index === 0);
+  });
+  document.querySelectorAll('.opt').forEach(function(opt) {
+    opt.classList.remove('sel');
+  });
+  document.querySelectorAll('.next-btn').forEach(function(btn) {
+    btn.classList.remove('ready');
+    btn._p = null;
+  });
+  // reset paneli doprecyzowania
+  document.querySelectorAll('.q-clarify').forEach(function(panel) {
+    panel.style.display = 'none';
+  });
+  document.querySelectorAll('.clarify-opt').forEach(function(btn) {
+    btn.classList.remove('sel');
+  });
+  document.getElementById('pfill').style.width = '0%';
+  document.getElementById('q-label-text').textContent = 'Pytanie 1 z 8';
+  document.getElementById('q-label-pct').textContent = '0%';
+}
+// 5th option: pokaż panel doprecyzowania
+function showClarify(btn, n) {
+  var qDiv = btn.closest('.q-block');
+  // mark 5th opt as selected visually, unmark others
+  qDiv.querySelectorAll('.opt').forEach(function(b) { b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  // reset answers for this q & disable next
+  answers[n] = null;
+  var nb = qDiv.querySelector('.next-btn');
+  nb._p = null;
+  nb.classList.remove('ready');
+  // show clarify panel
+  var panel = document.getElementById('clarify-' + n);
+  if (panel) {
+    panel.style.display = 'block';
+    panel.querySelectorAll('.clarify-opt').forEach(function(b) { b.classList.remove('sel'); });
+  }
+}
+// wybór opcji w panelu doprecyzowania
+function pickClarify(btn, n) {
+  var panel = document.getElementById('clarify-' + n);
+  panel.querySelectorAll('.clarify-opt').forEach(function(b) { b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  // record answer and activate next
+  answers[n] = btn.dataset.p;
+  var qDiv = document.getElementById('q' + n);
+  var nb = qDiv.querySelector('.next-btn');
+  nb._p = btn.dataset.p;
+  nb.classList.add('ready');
+}
+// wybór odpowiedzi
+function pick(btn) {
+  var qDiv = btn.closest('.q-block');
+  var qId = qDiv.id;
+  var qNum = parseInt(qId.replace('q', ''), 10);
+  qDiv.querySelectorAll('.opt').forEach(function(b) { b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  // ukryj i wyczyść panel doprecyzowania
+  var panel = document.getElementById('clarify-' + qNum);
+  if (panel) {
+    panel.style.display = 'none';
+    panel.querySelectorAll('.clarify-opt').forEach(function(b) { b.classList.remove('sel'); });
+  }
+  answers[qNum] = btn.dataset.p;
+  var nb = qDiv.querySelector('.next-btn');
+  nb._p = btn.dataset.p;
+  nb.classList.add('ready');
+}
+// przejście do następnego pytania
+function next(n) {
+  if (!answers[n]) return;
+  document.getElementById('q' + n).classList.remove('active');
+  var nxt = document.getElementById('q' + (n + 1));
+  if (nxt) {
+    nxt.classList.add('active');
+    cq = n + 1;
+    updProg();
+  }
+}
+// przejście do poprzedniego pytania
+function prev(n) {
+  if (n <= 1) return;
+  document.getElementById('q' + n).classList.remove('active');
+  var prevQ = document.getElementById('q' + (n - 1));
+  prevQ.classList.add('active');
+  cq = n - 1;
+  updProg();
+}
+// aktualizacja progress bara
+function updProg() {
+  var pct = Math.round(((cq - 1) / TQ) * 100);
+  document.getElementById('pfill').style.width = pct + '%';
+  document.getElementById('q-label-text').textContent = 'Pytanie ' + cq + ' z ' + TQ;
+  document.getElementById('q-label-pct').textContent = pct + '%';
+}
+// start quizu = zawsze nowy start
+function startQuiz() {
+  resetQuiz();
+  show('screen-quiz');
+}
+// scroll do instrukcji (hero CTA #1)
+function scrollToInstructions() {
+  var el = document.getElementById('how-it-works');
+  if (el) el.scrollIntoView({behavior: 'smooth'});
+}
+// wynik
+function showResult() {
+  if (answers[8] === undefined) return;
+  // zlicz realne odpowiedzi (tylko A-E, nie '0')
+  var PATS = {A:1,B:1,C:1,D:1,E:1};
+  var realCount = 0;
+  for (var qi = 1; qi <= 8; qi++) {
+    if (answers[qi] && PATS[answers[qi]]) realCount++;
+  }
+  // progress = 100%
+  document.getElementById('pfill').style.width = '100%';
+  document.getElementById('q-label-text').textContent = 'Gotowe';
+  document.getElementById('q-label-pct').textContent = '100%';
+  // ukryj wszystkie sekcje wyniku
+  ['result-main','result-soft','result-none'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  // SCENARIUSZ C: 0–1 realnych — brak wzorca
+  if (realCount <= 1) {
+    var rn = document.getElementById('result-none');
+    if (rn) rn.style.display = 'block';
+    show('screen-result');
+    return;
+  }
+  // oblicz wyniki (calculateScores ignoruje '0')
+  calculateScores();
+  // znajdź dominujący wzorzec
+  var mx = -1;
+  for (var k in sc) { if (sc[k] > mx) mx = sc[k]; }
+  var topPatterns = [];
+  for (var k in sc) { if (sc[k] === mx) topPatterns.push(k); }
+  var dom;
+  if (topPatterns.length === 1) {
+    dom = topPatterns[0];
+  } else {
+    dom = topPatterns[0];
+    for (var q = 8; q >= 1; q--) {
+      var a = answers[q];
+      if (a && topPatterns.indexOf(a) !== -1) { dom = a; break; }
+    }
+  }
+  window._dom = dom;
+  // SCENARIUSZ B: 2–3 realnych — miękki wynik
+  if (realCount <= 3) {
+    var p2 = P[dom];
+    var rsnEl = document.getElementById('rs-name');
+    var rsiEl = document.getElementById('rs-impact');
+    if (rsnEl) rsnEl.textContent = p2.name;
+    if (rsiEl) rsiEl.textContent = p2.impact;
+    var rsEl = document.getElementById('result-soft');
+    if (rsEl) rsEl.style.display = 'block';
+    show('screen-result');
+    return;
+  }
+  // SCENARIUSZ A: ≥4 realnych — normalny wynik
+  var sec = null, secScore = -1;
+  for (var k2 in sc) {
+    if (k2 !== dom && sc[k2] > secScore) { secScore = sc[k2]; sec = k2; }
+  }
+  window._sec = (secScore >= 2) ? sec : null;
+  var p = P[dom];
+  document.getElementById('r-name').textContent = p.name;
+  document.getElementById('r-impact').textContent = p.impact;
+  document.getElementById('r-how').textContent = p.how;
+  var sl = document.getElementById('r-signs');
+  sl.innerHTML = '';
+  p.signs.forEach(function(s) { var li = document.createElement('li'); li.textContent = s; sl.appendChild(li); });
+  document.getElementById('r-day').textContent = p.day;
+  document.getElementById('r-cost').textContent = p.cost;
+  document.getElementById('r-bridge').textContent = p.bridge;
+  var rl = document.getElementById('r-recover');
+  rl.innerHTML = '';
+  p.recover.forEach(function(r) { var li = document.createElement('li'); li.textContent = r; rl.appendChild(li); });
+  var secBlock = document.getElementById('r-second');
+  if (secBlock) {
+    if (window._sec) {
+      var sp = P[window._sec];
+      secBlock.style.display = 'block';
+      var sn = document.getElementById('r-second-name');
+      var si = document.getElementById('r-second-impact');
+      if (sn) sn.textContent = sp.name;
+      if (si) si.textContent = sp.impact;
+    } else {
+      secBlock.style.display = 'none';
+    }
+  }
+  var rmEl = document.getElementById('result-main');
+  if (rmEl) rmEl.style.display = 'block';
+  show('screen-result');
+}
+// ── EXERCISE ──
+function showExercise() {
+  var p = P[window._dom || 'B'];
+  document.getElementById('ex-title').textContent = p.exTitle;
+  var c = document.getElementById('ex-qs');
+  c.innerHTML = '';
+  p.exQs.forEach(function(q) {
+    c.innerHTML += '<div class="ex-q"><div class="ex-q-label">' + q.l + '</div><div class="ex-q-text">' + q.t + '</div><textarea class="ex-field" rows="3" placeholder="Napisz szczerze, co pojawia się w Tobie…"></textarea></div>';
+  });
+  document.getElementById('ex-closer').textContent = p.exClose;
+  show('screen-exercise');
+}
+// ── WORKSHOP ──
+function showWorkshop() {
+  var dom = window._dom || 'B';
+  var sec = window._sec || null;
+  // highlight days
+  document.querySelectorAll('.day').forEach(function(d) {
+    d.classList.remove('featured','secondary-featured');
+    if (d.dataset.p === dom) d.classList.add('featured');
+    else if (sec && d.dataset.p === sec) d.classList.add('secondary-featured');
+  });
+  // KL note + pkg3 for E
+  if (dom === 'E') {
+    document.getElementById('kl-note').style.display = 'block';
+    document.getElementById('pkg3').classList.add('featured');
+  } else {
+    document.getElementById('kl-note').style.display = 'none';
+    document.getElementById('pkg3').classList.remove('featured');
+  }
+  // second pattern note
+  var secNote = document.getElementById('ws-sec-note');
+  if (secNote) {
+    if (sec) {
+      var P2 = P[sec];
+      secNote.style.display = 'block';
+      secNote.querySelector('.ws-sec-name').textContent = P2.name;
+    } else {
+      secNote.style.display = 'none';
+    }
+  }
+  show('screen-workshop');
+}
+// ── UTILITY ──
+function show(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
